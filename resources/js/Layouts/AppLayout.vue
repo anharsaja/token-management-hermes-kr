@@ -19,45 +19,56 @@ const navItems = [
 </script>
 
 <template>
-    <div class="flex h-screen overflow-hidden" style="background:#F8F9FB">
+    <div class="flex h-screen overflow-hidden" style="background:var(--color-bg)">
 
-        <!-- Sidebar — light, 260px, border-r -->
+        <!-- Sidebar — vibrancy frosted glass, 288px, matches 9Router w-72 -->
         <aside
-            class="flex w-[260px] flex-shrink-0 flex-col border-r border-gray-200 bg-white"
+            class="bg-vibrancy custom-scrollbar flex w-72 flex-shrink-0 flex-col"
+            style="border-right:1px solid var(--color-border-subtle); min-height:100%"
             aria-label="Sidebar navigation"
         >
-            <!-- Logo -->
-            <div class="flex h-[60px] items-center gap-3 border-b border-gray-100 px-4">
-                <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-500">
-                    <svg class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                </div>
-                <div>
-                    <p class="text-sm font-semibold text-gray-900">Token Management</p>
+            <!-- macOS traffic lights -->
+            <div class="flex items-center gap-2 px-6 pb-2 pt-5">
+                <div class="h-3 w-3 rounded-full" style="background:#FF5F56"></div>
+                <div class="h-3 w-3 rounded-full" style="background:#FFBD2E"></div>
+                <div class="h-3 w-3 rounded-full" style="background:#27C93F"></div>
+            </div>
+
+            <!-- Brand -->
+            <div class="flex flex-col gap-2 px-6 py-4">
+                <div class="flex items-center gap-3">
+                    <div class="flex h-9 w-9 items-center justify-center rounded-[10px]"
+                         style="background:linear-gradient(135deg,#e56a4a,#a64027); box-shadow:var(--shadow-warm)">
+                        <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-[17px] font-semibold tracking-tight" style="color:var(--color-text-main)">Token Mgmt</p>
+                    </div>
                 </div>
             </div>
 
-            <!-- Nav -->
-            <nav class="flex-1 space-y-0.5 px-3 py-3">
+            <!-- Nav links -->
+            <nav class="custom-scrollbar flex-1 space-y-0.5 overflow-y-auto px-4 py-2">
                 <Link
                     v-for="item in navItems"
                     :key="item.routeName"
                     :href="route(item.routeName)"
                     :class="[
-                        'group flex h-10 items-center rounded-[8px] px-3 text-[13px] font-medium transition-colors',
+                        'group flex items-center gap-3 rounded-lg px-3 py-[6px] text-[13px] font-medium transition-all',
                         route().current(item.routeName)
-                            ? 'bg-orange-50 text-orange-600'
-                            : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900',
+                            ? 'text-[var(--color-brand-500)]'
+                            : 'hover:text-[var(--color-text-main)]',
                     ]"
                     :style="route().current(item.routeName)
-                        ? 'border-left: 2px solid #f97316'
-                        : ''"
+                        ? 'background:rgba(229,106,74,0.10); color:var(--color-brand-500)'
+                        : 'color:var(--color-text-muted)'"
                     :aria-current="route().current(item.routeName) ? 'page' : undefined"
                 >
                     <svg
-                        class="mr-2.5 h-4 w-4 flex-shrink-0"
-                        :class="route().current(item.routeName) ? 'text-orange-500' : 'text-gray-400 group-hover:text-gray-500'"
+                        class="h-[18px] w-[18px] flex-shrink-0 transition-colors"
+                        :style="route().current(item.routeName) ? 'color:var(--color-brand-500)' : 'color:#6b7280'"
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none" viewBox="0 0 24 24"
                         stroke="currentColor" stroke-width="2"
@@ -69,13 +80,13 @@ const navItems = [
                 </Link>
             </nav>
 
-            <!-- System section label -->
-            <div class="px-4 pb-1 pt-2">
-                <p class="text-[10px] font-semibold uppercase tracking-wider text-gray-400">System</p>
+            <!-- System section -->
+            <div class="px-4 pb-1 pt-3">
+                <p class="px-3 text-[11px] font-semibold uppercase tracking-wider" style="color:var(--color-text-subtle)">System</p>
             </div>
-            <div class="pb-2 px-3">
-                <div class="flex h-10 items-center rounded-[8px] px-3 text-[13px] text-gray-400">
-                    <svg class="mr-2.5 h-4 w-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <div class="px-4 pb-2">
+                <div class="flex items-center gap-3 rounded-lg px-3 py-[6px] text-[13px] font-medium" style="color:var(--color-text-muted)">
+                    <svg class="h-[18px] w-[18px] flex-shrink-0" style="color:#9ca3af" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                     Settings
@@ -83,16 +94,19 @@ const navItems = [
             </div>
 
             <!-- User + logout -->
-            <div class="border-t border-gray-100 p-4">
-                <div class="mb-0.5 truncate text-[13px] font-medium text-gray-900">
+            <div class="p-4" style="border-top:1px solid var(--color-border-subtle)">
+                <div class="mb-0.5 truncate text-[13px] font-semibold" style="color:var(--color-text-main)">
                     {{ $page.props.auth.user.name }}
                 </div>
-                <div class="mb-3 truncate text-[12px] text-gray-400">
+                <div class="mb-3 truncate text-[12px]" style="color:var(--color-text-muted)">
                     {{ $page.props.auth.user.email }}
                 </div>
                 <button
                     type="button"
-                    class="w-full rounded-[8px] border border-gray-200 bg-white px-3 py-1.5 text-left text-[13px] text-gray-600 transition-colors hover:bg-gray-50 hover:text-gray-900 focus:outline-none"
+                    class="w-full rounded-[8px] px-3 py-1.5 text-left text-[13px] font-medium transition-colors focus:outline-none"
+                    style="background:var(--color-surface-2); color:var(--color-text-muted); border:1px solid var(--color-border-subtle)"
+                    onmouseenter="this.style.background='var(--color-surface-3)'; this.style.color='var(--color-text-main)'"
+                    onmouseleave="this.style.background='var(--color-surface-2)'; this.style.color='var(--color-text-muted)'"
                     @click="logout"
                 >
                     Log Out
@@ -102,12 +116,7 @@ const navItems = [
 
         <!-- Main content -->
         <div class="flex flex-1 flex-col overflow-hidden">
-            <!-- Topbar -->
-            <header class="flex h-[60px] flex-shrink-0 items-center border-b border-gray-200 bg-white px-6">
-                <h1 class="text-[13px] font-medium text-gray-600">{{ title }}</h1>
-            </header>
-
-            <main class="flex-1 overflow-y-auto" style="background:#F8F9FB">
+            <main class="custom-scrollbar flex-1 overflow-y-auto" style="background:var(--color-bg)">
                 <slot />
             </main>
         </div>

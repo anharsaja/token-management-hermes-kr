@@ -28,13 +28,15 @@ const chartData = computed(() => {
         datasets: [{
             label:                metrics.find(m => m.value === metric.value)?.label,
             data:                 data ?? [],
-            borderColor:          '#f97316',
-            backgroundColor:      'rgba(249,115,22,0.07)',
-            tension:              0.3,
+            borderColor:          '#e56a4a',
+            backgroundColor:      'rgba(229,106,74,0.06)',
+            tension:              0.4,
             fill:                 true,
             pointRadius:          (props.chart.labels?.length ?? 0) > 60 ? 0 : 3,
             pointHoverRadius:     5,
-            pointBackgroundColor: '#f97316',
+            pointBackgroundColor: '#e56a4a',
+            pointBorderColor:     '#fff',
+            pointBorderWidth:     1.5,
             borderWidth:          2,
         }],
     };
@@ -46,11 +48,11 @@ const options = computed(() => ({
     plugins: {
         legend: { display: false },
         tooltip: {
-            backgroundColor: 'white',
+            backgroundColor: '#ffffff',
             borderColor:     '#e5e7eb',
             borderWidth:     1,
             titleColor:      '#6b7280',
-            bodyColor:       '#111827',
+            bodyColor:       '#0a0a0a',
             padding:         10,
             callbacks: {
                 label: (ctx) => {
@@ -63,41 +65,41 @@ const options = computed(() => ({
     },
     scales: {
         x: {
-            ticks:  { color: '#9ca3af', font: { size: 11 }, maxTicksLimit: 10 },
-            grid:   { color: 'rgba(0,0,0,0.04)' },
-            border: { color: '#f3f4f6' },
+            ticks:  { color: '#9ca3af', font: { size: 11, family: 'Inter, system-ui' }, maxTicksLimit: 10 },
+            grid:   { color: 'rgba(229,106,74,0.05)' },
+            border: { color: '#f1f1f3' },
         },
         y: {
             beginAtZero: true,
             ticks: {
                 color: '#9ca3af',
-                font:  { size: 11 },
+                font:  { size: 11, family: 'Inter, system-ui' },
                 callback: (v) => v >= 1000 ? (v/1000).toFixed(0)+'K' : v,
             },
-            grid:   { color: 'rgba(0,0,0,0.04)' },
-            border: { color: '#f3f4f6' },
+            grid:   { color: 'rgba(229,106,74,0.05)' },
+            border: { color: '#f1f1f3' },
         },
     },
 }));
 </script>
 
 <template>
-    <div class="rounded-[12px] border border-gray-100 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.08)]">
-        <div class="mb-4 flex items-center justify-between">
-            <p class="text-[11px] font-semibold uppercase tracking-[0.08em] text-gray-400">Usage Trend</p>
+    <div class="rounded-[14px] p-5"
+         style="background:var(--color-surface); border:1px solid var(--color-border-subtle); box-shadow:var(--shadow-soft)">
 
-            <!-- Metric toggle -->
-            <div class="flex rounded-full p-[3px]" style="background: rgba(0,0,0,0.05)">
+        <div class="mb-4 flex items-center justify-between">
+            <p class="text-[11px] font-semibold uppercase tracking-wider" style="color:var(--color-text-muted)">Usage Trend</p>
+
+            <!-- Metric toggle — surface-2 container, surface active (exact 9Router style) -->
+            <div class="inline-flex items-center rounded-[8px] p-1" style="background:var(--color-surface-2)">
                 <button
                     v-for="m in metrics"
                     :key="m.value"
                     type="button"
-                    :class="[
-                        'rounded-full px-[14px] py-[5px] text-[13px] font-medium transition-all focus:outline-none',
-                        metric === m.value
-                            ? 'bg-orange-500 text-white shadow-sm'
-                            : 'text-gray-500 hover:text-gray-800',
-                    ]"
+                    :class="['rounded-[6px] px-3 py-1 text-[12px] font-medium transition-all focus:outline-none', metric === m.value ? 'shadow-sm' : '']"
+                    :style="metric === m.value
+                        ? 'background:var(--color-surface); color:var(--color-text-main)'
+                        : 'color:var(--color-text-muted)'"
                     @click="metric = m.value"
                 >
                     {{ m.label }}
@@ -106,7 +108,8 @@ const options = computed(() => ({
         </div>
 
         <div v-if="!chart.labels || chart.labels.length === 0"
-             class="flex h-44 items-center justify-center text-[13px] text-gray-400">
+             class="flex h-44 items-center justify-center text-[13px]"
+             style="color:var(--color-text-subtle)">
             No data for this period
         </div>
         <div v-else class="h-52">
