@@ -28,11 +28,7 @@ class DashboardController extends Controller
             ->distinct('provider')
             ->count('provider');
 
-        $usageQuery = TokenUsage::whereNull('token_usages.deleted_at');
-        if ($dateFrom) {
-            $usageQuery->whereDate('used_at', '>=', $dateFrom)
-                       ->whereDate('used_at', '<=', $dateTo);
-        }
+        $usageQuery = $this->baseQuery($dateFrom, $dateTo);
 
         $totals = (clone $usageQuery)
             ->selectRaw('COALESCE(SUM(input_tokens + output_tokens), 0) as total_tokens, COALESCE(SUM(cost), 0) as total_cost')
@@ -56,7 +52,7 @@ class DashboardController extends Controller
                 'is_deleted'    => $row->agent?->deleted_at !== null,
             ]);
 
-        // ── Recent 10 usages (all-time) ───────────────────────────────────
+        // ── Recent 10 usages (all-time) ──────────────────────────────────
         $recentUsages = TokenUsage::whereNull('deleted_at')
             ->with('agent')
             ->orderByDesc('used_at')
@@ -91,24 +87,16 @@ class DashboardController extends Controller
             });
 
         // ── Chart 1: Token trend ──────────────────────────────────────────
-        // Determine if we should group by month (all-time with > 365 days span)
         $groupByMonth = false;
         if ($period === 'all') {
             $earliest = TokenUsage::whereNull('deleted_at')->min('used_at');
             if ($earliest) {
-                $daySpan = Carbon::parse($earliest)->diffInDays(Carbon::today());
-                $groupByMonth = $daySpan > 365;
+                $groupByMonth = Carbon::parse($earliest)->diffInDays(Carbon::today()) > 365;
             }
         }
 
-        $trendQuery = TokenUsage::whereNull('deleted_at');
-        if ($dateFrom) {
-            $trendQuery->whereDate('used_at', '>=', $dateFrom)
-                       ->whereDate('used_at', '<=', $dateTo);
-        }
-
         if ($groupByMonth) {
-            $tokenTrend = $trendQuery
+            $tokenTrend = $this->baseQuery($dateFrom, $dateTo)
                 ->selectRaw("strftime('%Y-%m', used_at) as date, SUM(input_tokens + output_tokens) as total_tokens")
                 ->groupBy('date')
                 ->orderBy('date')
@@ -116,7 +104,7 @@ class DashboardController extends Controller
                 ->map(fn ($r) => ['date' => $r->date, 'total_tokens' => (int) $r->total_tokens])
                 ->toArray();
         } else {
-            $tokenTrend = $trendQuery
+            $tokenTrend = $this->baseQuery($dateFrom, $dateTo)
                 ->selectRaw('used_at as date, SUM(input_tokens + output_tokens) as total_tokens')
                 ->groupBy('used_at')
                 ->orderBy('used_at')
@@ -125,9 +113,9 @@ class DashboardController extends Controller
                 ->toArray();
         }
 
-        // ── Chart 2: Token per agent ──────────────────────────────────────
-        $tokenPerAgent = (clone $trendQuery)
-            ->join('agents', 'token_usages.agent_id', '=', 'agents.id', 'left')
+        // ── Chart 2: Token per agent (fresh query + explicit table prefix) ─
+        $tokenPerAgent = $this->baseQuery($dateFrom, $dateTo)
+            ->leftJoin('agents', 'token_usages.agent_id', '=', 'agents.id')
             ->selectRaw('token_usages.agent_id, COALESCE(agents.name, ?) as agent_name, SUM(token_usages.input_tokens + token_usages.output_tokens) as total_tokens, agents.deleted_at as agent_deleted_at', ['(Unknown)'])
             ->groupBy('token_usages.agent_id')
             ->orderByDesc('total_tokens')
@@ -140,9 +128,9 @@ class DashboardController extends Controller
             ])
             ->toArray();
 
-        // ── Chart 3: Cost per agent ───────────────────────────────────────
-        $costPerAgent = (clone $trendQuery)
-            ->join('agents', 'token_usages.agent_id', '=', 'agents.id', 'left')
+        // ── Chart 3: Cost per agent (fresh query) ────────────────────────
+        $costPerAgent = $this->baseQuery($dateFrom, $dateTo)
+            ->leftJoin('agents', 'token_usages.agent_id', '=', 'agents.id')
             ->whereNotNull('token_usages.cost')
             ->selectRaw('token_usages.agent_id, COALESCE(agents.name, ?) as agent_name, SUM(token_usages.cost) as total_cost', ['(Unknown)'])
             ->groupBy('token_usages.agent_id')
@@ -170,6 +158,17 @@ class DashboardController extends Controller
             'cost_per_agent'    => $costPerAgent,
             'group_by_month'    => $groupByMonth,
         ]);
+    }
+
+    /** Fresh base query — qualified table prefix, no prior selectRaw state. */
+    private function baseQuery(?string $dateFrom, ?string $dateTo)
+    {
+        $q = TokenUsage::whereNull('token_usages.deleted_at');
+        if ($dateFrom) {
+            $q->whereDate('token_usages.used_at', '>=', $dateFrom)
+              ->whereDate('token_usages.used_at', '<=', $dateTo);
+        }
+        return $q;
     }
 
     private function periodRange(string $period): array
