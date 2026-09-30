@@ -15,32 +15,43 @@ function fmtCost(c) {
 </script>
 
 <template>
-    <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+    <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+
         <!-- Total Requests -->
-        <div class="rounded-xl border border-gray-700 bg-gray-800/60 p-4 backdrop-blur">
-            <p class="text-xs font-semibold uppercase tracking-widest text-gray-400">Requests</p>
-            <p class="mt-2 text-2xl font-bold text-white">{{ fmt(kpi.total_requests) }}</p>
+        <div class="rounded-[14px] border border-white/[0.07] p-5 backdrop-blur-[12px]"
+             style="background: rgba(17,24,39,0.60)">
+            <p class="text-[11px] font-medium uppercase tracking-[0.08em] text-[#94A3B8]">Requests</p>
+            <p class="mt-2 text-[30px] font-bold leading-none text-[#F1F5F9]">{{ fmt(kpi.total_requests) }}</p>
         </div>
+
         <!-- Input Tokens -->
-        <div class="rounded-xl border border-gray-700 bg-gray-800/60 p-4 backdrop-blur">
-            <p class="text-xs font-semibold uppercase tracking-widest text-orange-400">Input Tokens</p>
-            <p class="mt-2 text-2xl font-bold text-white">{{ fmt(kpi.total_input_tokens) }}</p>
+        <div class="rounded-[14px] border border-white/[0.07] p-5 backdrop-blur-[12px]"
+             style="background: rgba(17,24,39,0.60)">
+            <p class="text-[11px] font-medium uppercase tracking-[0.08em] text-[#94A3B8]">Input Tokens</p>
+            <p class="mt-2 text-[30px] font-bold leading-none text-[#F97316]">{{ fmt(kpi.total_input_tokens) }}</p>
         </div>
+
         <!-- Output Tokens -->
-        <div class="rounded-xl border border-gray-700 bg-gray-800/60 p-4 backdrop-blur">
-            <p class="text-xs font-semibold uppercase tracking-widest text-teal-400">Output Tokens</p>
-            <p class="mt-2 text-2xl font-bold text-white">{{ fmt(kpi.total_output_tokens) }}</p>
+        <div class="rounded-[14px] border border-white/[0.07] p-5 backdrop-blur-[12px]"
+             style="background: rgba(17,24,39,0.60)">
+            <p class="text-[11px] font-medium uppercase tracking-[0.08em] text-[#94A3B8]">Output Tokens</p>
+            <p class="mt-2 text-[30px] font-bold leading-none text-[#2DD4BF]">{{ fmt(kpi.total_output_tokens) }}</p>
         </div>
+
         <!-- Total Tokens -->
-        <div class="rounded-xl border border-gray-700 bg-gray-800/60 p-4 backdrop-blur">
-            <p class="text-xs font-semibold uppercase tracking-widest text-indigo-400">Total Tokens</p>
-            <p class="mt-2 text-2xl font-bold text-white">{{ fmt(kpi.total_tokens) }}</p>
+        <div class="rounded-[14px] border border-white/[0.07] p-5 backdrop-blur-[12px]"
+             style="background: rgba(17,24,39,0.60)">
+            <p class="text-[11px] font-medium uppercase tracking-[0.08em] text-[#94A3B8]">Total Tokens</p>
+            <p class="mt-2 text-[30px] font-bold leading-none text-[#818CF8]">{{ fmt(kpi.total_tokens) }}</p>
         </div>
+
         <!-- Est. Cost -->
-        <div class="rounded-xl border border-gray-700 bg-gray-800/60 p-4 backdrop-blur">
-            <p class="text-xs font-semibold uppercase tracking-widest text-yellow-400">Est. Cost</p>
-            <p class="mt-2 text-2xl font-bold text-white">{{ fmtCost(kpi.est_cost) }}</p>
-            <p class="mt-1 text-xs text-gray-500">Manually recorded</p>
+        <div class="rounded-[14px] border border-white/[0.07] p-5 backdrop-blur-[12px]"
+             style="background: rgba(17,24,39,0.60)">
+            <p class="text-[11px] font-medium uppercase tracking-[0.08em] text-[#94A3B8]">Est. Cost</p>
+            <p class="mt-2 text-[30px] font-bold leading-none text-[#FBBF24]">{{ fmtCost(kpi.est_cost) }}</p>
+            <p class="mt-1.5 text-[11px] text-[#475569]">Manually recorded</p>
         </div>
+
     </div>
 </template>

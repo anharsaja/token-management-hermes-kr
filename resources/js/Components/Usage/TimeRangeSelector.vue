@@ -13,16 +13,22 @@ function select(r) {
 </script>
 
 <template>
-    <div class="flex gap-1 rounded-lg bg-gray-800 p-1" role="group" aria-label="Time range">
+    <!-- Pill container: rgba(255,255,255,0.05) bg, radius-full, 3px padding -->
+    <div
+        class="flex rounded-full p-[3px]"
+        style="background: rgba(255,255,255,0.05)"
+        role="group"
+        aria-label="Time range"
+    >
         <button
             v-for="r in ranges"
             :key="r.value"
             type="button"
             :class="[
-                'rounded-md px-3 py-1 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-orange-400',
+                'rounded-full px-[14px] py-[5px] text-[13px] font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[#F97316]/40',
                 activeRange === r.value
-                    ? 'bg-orange-500 text-white'
-                    : 'text-gray-400 hover:text-white',
+                    ? 'bg-[#F97316] text-white font-semibold'
+                    : 'text-[#94A3B8] hover:text-[#F1F5F9]',
             ]"
             @click="select(r.value)"
         >
