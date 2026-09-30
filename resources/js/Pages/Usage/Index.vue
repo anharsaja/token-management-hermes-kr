@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import { router } from '@inertiajs/vue3';
+import AppLayout from '@/Layouts/AppLayout.vue';
 import KpiCards from '@/Components/Usage/KpiCards.vue';
 import TimeRangeSelector from '@/Components/Usage/TimeRangeSelector.vue';
 import AgentTopologyGraph from '@/Components/Usage/AgentTopologyGraph.vue';
@@ -46,114 +47,92 @@ function fmtCost(c) {
 </script>
 
 <template>
-    <!-- bg-base: #0D1520 -->
-    <div class="min-h-screen" style="background:#0D1520; color:#F1F5F9; font-family:'Inter','DM Sans',system-ui,sans-serif">
+    <AppLayout title="Usage & Analytics">
+        <div class="p-6">
 
-        <!-- Top bar: bg-surface with glass -->
-        <header
-            class="flex h-[60px] items-center justify-between px-6 backdrop-blur-[12px]"
-            style="background:rgba(17,24,39,0.80); border-bottom:1px solid rgba(255,255,255,0.07)"
-        >
-            <div class="flex items-center gap-3">
-                <a
-                    href="/dashboard"
-                    class="text-[13px] transition-colors"
-                    style="color:#475569"
-                    onmouseenter="this.style.color='#94A3B8'"
-                    onmouseleave="this.style.color='#475569'"
-                >← Dashboard</a>
-                <span style="color:#1E293B">/</span>
-                <span class="text-[14px] font-semibold" style="color:#F1F5F9">Usage &amp; Analytics</span>
-            </div>
-            <TimeRangeSelector :ranges="RANGES" :active-range="range" :active-tab="tab" />
-        </header>
-
-        <!-- Page content -->
-        <div class="px-6 py-6" style="max-width:1400px; margin:0 auto">
-
-            <!-- Page title + tab switcher -->
-            <div class="mb-6 flex flex-wrap items-end justify-between gap-4">
-                <div>
-                    <h1 class="text-[24px] font-semibold leading-[32px]" style="color:#F1F5F9">Usage &amp; Analytics</h1>
-                    <p class="mt-1 text-[14px]" style="color:#94A3B8">Token consumption across all agents</p>
+            <!-- Page header -->
+            <div class="mb-5">
+                <div class="flex items-start gap-2">
+                    <svg class="mt-0.5 h-5 w-5 flex-shrink-0 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <div>
+                        <h1 class="text-[24px] font-semibold text-gray-900">Usage &amp; Analytics</h1>
+                        <p class="mt-0.5 text-[14px] text-gray-500">Monitor your API usage, token consumption, and request logs</p>
+                    </div>
                 </div>
 
-                <!-- Tab switcher — pill style -->
-                <div
-                    class="flex rounded-full p-[3px]"
-                    style="background:rgba(255,255,255,0.05)"
-                >
-                    <button
-                        v-for="t in ['overview', 'details']"
-                        :key="t"
-                        type="button"
-                        :class="[
-                            'rounded-full px-5 py-[6px] text-[13px] font-medium capitalize transition-colors focus:outline-none',
-                            tab === t
-                                ? 'bg-[#818CF8] text-white font-semibold'
-                                : 'hover:text-[#F1F5F9]',
-                        ]"
-                        :style="tab !== t ? 'color:#94A3B8' : ''"
-                        @click="switchTab(t)"
-                    >
-                        {{ t }}
-                    </button>
+                <!-- Tabs + Time Range row -->
+                <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
+                    <!-- Tab switcher — segment style matching reference -->
+                    <div class="flex rounded-[10px] border border-gray-200 bg-white p-1 shadow-sm">
+                        <button
+                            v-for="t in ['overview', 'details']"
+                            :key="t"
+                            type="button"
+                            :class="[
+                                'rounded-[8px] px-5 py-1.5 text-[13px] font-medium capitalize transition-all focus:outline-none',
+                                tab === t
+                                    ? 'bg-white text-gray-900 shadow-sm ring-1 ring-gray-200'
+                                    : 'text-gray-500 hover:text-gray-700',
+                            ]"
+                            @click="switchTab(t)"
+                        >
+                            {{ t }}
+                        </button>
+                    </div>
+
+                    <TimeRangeSelector :ranges="RANGES" :active-range="range" :active-tab="tab" />
                 </div>
             </div>
 
             <!-- KPI cards -->
-            <div class="mb-6">
+            <div class="mb-5">
                 <KpiCards :kpi="kpi" />
             </div>
 
             <!-- ── Overview ── -->
             <template v-if="tab === 'overview'">
 
-                <!-- Topology (8/12) + Recent log (4/12) -->
-                <div class="mb-4 grid grid-cols-1 gap-4 lg:grid-cols-12">
+                <!-- Topology (8/12) + Recent requests (4/12) -->
+                <div class="mb-5 grid grid-cols-1 gap-4 lg:grid-cols-12">
                     <div class="lg:col-span-8">
                         <AgentTopologyGraph :nodes="nodes" @select-agent="onSelectAgent" />
 
                         <!-- Agent info panel -->
                         <transition
                             enter-active-class="transition duration-150 ease-out"
-                            enter-from-class="opacity-0 scale-[0.96]"
+                            enter-from-class="opacity-0 scale-[0.97]"
                             enter-to-class="opacity-100 scale-100"
                             leave-active-class="transition duration-100 ease-in"
-                            leave-from-class="opacity-100 scale-100"
-                            leave-to-class="opacity-0 scale-[0.96]"
+                            leave-from-class="opacity-100"
+                            leave-to-class="opacity-0"
                         >
                             <div
                                 v-if="selectedAgent"
-                                class="mt-3 rounded-[14px] border p-5 backdrop-blur-[12px]"
-                                style="background:rgba(17,24,39,0.80); border-color:rgba(129,140,248,0.30)"
+                                class="mt-3 rounded-[12px] border border-orange-100 bg-orange-50/50 p-5"
                             >
                                 <div class="flex items-start justify-between gap-2">
                                     <div>
-                                        <p class="text-[16px] font-semibold" style="color:#F1F5F9">{{ selectedAgent.name }}</p>
-                                        <p class="mt-0.5 text-[13px]" style="color:#94A3B8">
+                                        <p class="text-[16px] font-semibold text-gray-900">{{ selectedAgent.name }}</p>
+                                        <p class="mt-0.5 text-[13px] text-gray-500">
                                             {{ selectedAgent.provider }} · {{ selectedAgent.model_default }}
                                         </p>
                                     </div>
                                     <button
                                         type="button"
-                                        class="rounded-full p-1 text-[11px] transition-colors"
-                                        style="color:#475569"
-                                        onmouseenter="this.style.color='#F1F5F9'"
-                                        onmouseleave="this.style.color='#475569'"
+                                        class="rounded-full p-1 text-[11px] text-gray-400 transition-colors hover:text-gray-700"
                                         @click="selectedAgent = null"
                                     >✕</button>
                                 </div>
                                 <div class="mt-4 grid grid-cols-2 gap-4">
                                     <div>
-                                        <p class="text-[11px] font-medium uppercase tracking-[0.08em]" style="color:#94A3B8">Tokens (range)</p>
-                                        <p class="mt-1 text-[24px] font-bold" style="color:#818CF8">
-                                            {{ selectedAgent.total_tokens.toLocaleString() }}
-                                        </p>
+                                        <p class="text-[11px] font-semibold uppercase tracking-[0.08em] text-gray-400">Tokens (range)</p>
+                                        <p class="mt-1 text-[24px] font-bold text-blue-500">{{ selectedAgent.total_tokens.toLocaleString() }}</p>
                                     </div>
                                     <div>
-                                        <p class="text-[11px] font-medium uppercase tracking-[0.08em]" style="color:#94A3B8">Cost (range)</p>
-                                        <p class="mt-1 text-[24px] font-bold" style="color:#FBBF24">{{ fmtCost(selectedAgent.total_cost) }}</p>
+                                        <p class="text-[11px] font-semibold uppercase tracking-[0.08em] text-gray-400">Cost (range)</p>
+                                        <p class="mt-1 text-[24px] font-bold text-orange-500">{{ fmtCost(selectedAgent.total_cost) }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -165,7 +144,7 @@ function fmtCost(c) {
                     </div>
                 </div>
 
-                <!-- Chart full width -->
+                <!-- Chart -->
                 <UsageChart :chart="chart" />
             </template>
 
@@ -179,5 +158,5 @@ function fmtCost(c) {
                 />
             </template>
         </div>
-    </div>
+    </AppLayout>
 </template>

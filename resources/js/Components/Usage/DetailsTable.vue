@@ -57,106 +57,78 @@ function formatCost(c) {
     <div class="space-y-4">
 
         <!-- Filter bar -->
-        <div
-            class="flex flex-wrap items-end gap-3 rounded-[14px] border border-white/[0.07] p-5 backdrop-blur-[12px]"
-            style="background: rgba(17,24,39,0.60)"
-        >
-            <!-- Agent -->
+        <div class="flex flex-wrap items-end gap-3 rounded-[12px] border border-gray-100 bg-white p-4 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
             <div>
-                <label class="mb-1 block text-[11px] font-medium uppercase tracking-[0.06em] text-[#475569]">Agent</label>
+                <label class="mb-1 block text-[11px] font-medium uppercase tracking-[0.06em] text-gray-400">Agent</label>
                 <select
                     v-model="filterAgentId"
-                    class="rounded-[10px] border border-white/[0.07] bg-[#0F172A] px-3 py-2 text-[13px] text-[#F1F5F9] focus:border-[#F97316] focus:outline-none focus:ring-2 focus:ring-[#F97316]/20"
+                    class="rounded-[8px] border border-gray-200 bg-white px-3 py-2 text-[13px] text-gray-700 focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20"
                 >
-                    <option value="" style="background:#0F172A">All agents</option>
-                    <option v-for="a in agents" :key="a.id" :value="a.id" style="background:#0F172A">
+                    <option value="">All agents</option>
+                    <option v-for="a in agents" :key="a.id" :value="a.id">
                         {{ a.name }}{{ a.deleted_at ? ' (inactive)' : '' }}
                     </option>
                 </select>
             </div>
-            <!-- From -->
             <div>
-                <label class="mb-1 block text-[11px] font-medium uppercase tracking-[0.06em] text-[#475569]">From</label>
-                <input
-                    v-model="filterDateFrom"
-                    type="date"
-                    class="rounded-[10px] border border-white/[0.07] bg-[#0F172A] px-3 py-2 text-[13px] text-[#F1F5F9] focus:border-[#F97316] focus:outline-none focus:ring-2 focus:ring-[#F97316]/20"
-                />
+                <label class="mb-1 block text-[11px] font-medium uppercase tracking-[0.06em] text-gray-400">From</label>
+                <input v-model="filterDateFrom" type="date"
+                    class="rounded-[8px] border border-gray-200 bg-white px-3 py-2 text-[13px] text-gray-700 focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20" />
             </div>
-            <!-- To -->
             <div>
-                <label class="mb-1 block text-[11px] font-medium uppercase tracking-[0.06em] text-[#475569]">To</label>
-                <input
-                    v-model="filterDateTo"
-                    type="date"
-                    class="rounded-[10px] border border-white/[0.07] bg-[#0F172A] px-3 py-2 text-[13px] text-[#F1F5F9] focus:border-[#F97316] focus:outline-none focus:ring-2 focus:ring-[#F97316]/20"
-                />
+                <label class="mb-1 block text-[11px] font-medium uppercase tracking-[0.06em] text-gray-400">To</label>
+                <input v-model="filterDateTo" type="date"
+                    class="rounded-[8px] border border-gray-200 bg-white px-3 py-2 text-[13px] text-gray-700 focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20" />
             </div>
-            <!-- Apply button — orange pill -->
-            <button
-                type="button"
-                class="rounded-full bg-[#F97316] px-4 py-2 text-[13px] font-medium text-white transition-opacity hover:opacity-85 focus:outline-none focus:ring-2 focus:ring-[#F97316]/40"
-                @click="applyFilters"
-            >
+            <button type="button"
+                class="rounded-full bg-orange-500 px-4 py-2 text-[13px] font-medium text-white transition-opacity hover:opacity-85 focus:outline-none focus:ring-2 focus:ring-orange-400/40"
+                @click="applyFilters">
                 Apply
             </button>
         </div>
 
         <!-- Table -->
-        <div
-            class="overflow-hidden rounded-[14px] border border-white/[0.07]"
-            style="background: rgba(17,24,39,0.60)"
-        >
+        <div class="overflow-hidden rounded-[12px] border border-gray-100 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
             <table class="min-w-full">
-                <!-- Header -->
-                <thead>
-                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.07)">
-                        <th class="px-4 py-[10px] text-left text-[11px] font-medium uppercase tracking-[0.06em] text-[#475569]">
-                            <button type="button" class="flex items-center gap-1 hover:text-[#94A3B8] transition-colors" @click="toggleSort('used_at')">
+                <thead class="border-b border-gray-100">
+                    <tr>
+                        <th class="px-4 py-[10px] text-left text-[11px] font-medium uppercase tracking-[0.06em] text-gray-400">
+                            <button type="button" class="flex items-center gap-1 transition-colors hover:text-gray-600" @click="toggleSort('used_at')">
                                 Date <span class="tabular-nums">{{ sortIcon('used_at') }}</span>
                             </button>
                         </th>
-                        <th class="px-4 py-[10px] text-left text-[11px] font-medium uppercase tracking-[0.06em] text-[#475569]">Agent</th>
-                        <th class="px-4 py-[10px] text-left text-[11px] font-medium uppercase tracking-[0.06em] text-[#475569]">Model</th>
-                        <th class="px-4 py-[10px] text-right text-[11px] font-medium uppercase tracking-[0.06em] text-[#475569]">Input</th>
-                        <th class="px-4 py-[10px] text-right text-[11px] font-medium uppercase tracking-[0.06em] text-[#475569]">Output</th>
-                        <th class="px-4 py-[10px] text-right text-[11px] font-medium uppercase tracking-[0.06em] text-[#475569]">
-                            <button type="button" class="ml-auto flex items-center gap-1 hover:text-[#94A3B8] transition-colors" @click="toggleSort('total_tokens')">
+                        <th class="px-4 py-[10px] text-left text-[11px] font-medium uppercase tracking-[0.06em] text-gray-400">Agent</th>
+                        <th class="px-4 py-[10px] text-left text-[11px] font-medium uppercase tracking-[0.06em] text-gray-400">Model</th>
+                        <th class="px-4 py-[10px] text-right text-[11px] font-medium uppercase tracking-[0.06em] text-gray-400">Input</th>
+                        <th class="px-4 py-[10px] text-right text-[11px] font-medium uppercase tracking-[0.06em] text-gray-400">Output</th>
+                        <th class="px-4 py-[10px] text-right text-[11px] font-medium uppercase tracking-[0.06em] text-gray-400">
+                            <button type="button" class="ml-auto flex items-center gap-1 transition-colors hover:text-gray-600" @click="toggleSort('total_tokens')">
                                 Total <span class="tabular-nums">{{ sortIcon('total_tokens') }}</span>
                             </button>
                         </th>
-                        <th class="px-4 py-[10px] text-right text-[11px] font-medium uppercase tracking-[0.06em] text-[#475569]">
-                            <button type="button" class="ml-auto flex items-center gap-1 hover:text-[#94A3B8] transition-colors" @click="toggleSort('cost')">
+                        <th class="px-4 py-[10px] text-right text-[11px] font-medium uppercase tracking-[0.06em] text-gray-400">
+                            <button type="button" class="ml-auto flex items-center gap-1 transition-colors hover:text-gray-600" @click="toggleSort('cost')">
                                 Cost <span class="tabular-nums">{{ sortIcon('cost') }}</span>
                             </button>
                         </th>
-                        <th class="px-4 py-[10px] text-left text-[11px] font-medium uppercase tracking-[0.06em] text-[#475569]">Notes</th>
+                        <th class="px-4 py-[10px] text-left text-[11px] font-medium uppercase tracking-[0.06em] text-gray-400">Notes</th>
                     </tr>
                 </thead>
-
-                <!-- Body -->
-                <tbody>
+                <tbody class="divide-y divide-gray-50">
                     <tr v-if="!usages || usages.data.length === 0">
-                        <td colspan="8" class="px-4 py-10 text-center text-[13px] text-[#475569]">
+                        <td colspan="8" class="px-4 py-10 text-center text-[13px] text-gray-400">
                             No usage records for this period.
                         </td>
                     </tr>
-                    <tr
-                        v-for="u in usages?.data ?? []"
-                        :key="u.id"
-                        class="transition-colors"
-                        style="border-bottom: 1px solid rgba(255,255,255,0.07)"
-                        onmouseenter="this.style.background='rgba(255,255,255,0.03)'"
-                        onmouseleave="this.style.background=''"
-                    >
-                        <td class="whitespace-nowrap px-4 py-3 text-[13px] text-[#94A3B8]">{{ formatDate(u.used_at) }}</td>
-                        <td class="whitespace-nowrap px-4 py-3 text-[13px] text-[#F1F5F9]">{{ u.agent?.name ?? '—' }}</td>
-                        <td class="whitespace-nowrap px-4 py-3 text-[13px] text-[#94A3B8]">{{ u.model }}</td>
-                        <td class="whitespace-nowrap px-4 py-3 text-right text-[13px] tabular-nums" style="color:#F97316">{{ u.input_tokens.toLocaleString() }}</td>
-                        <td class="whitespace-nowrap px-4 py-3 text-right text-[13px] tabular-nums" style="color:#2DD4BF">{{ u.output_tokens.toLocaleString() }}</td>
-                        <td class="whitespace-nowrap px-4 py-3 text-right text-[13px] tabular-nums" style="color:#818CF8">{{ (u.input_tokens + u.output_tokens).toLocaleString() }}</td>
-                        <td class="whitespace-nowrap px-4 py-3 text-right text-[13px] tabular-nums" style="color:#FBBF24">{{ formatCost(u.cost) }}</td>
-                        <td class="max-w-xs truncate px-4 py-3 text-[13px] text-[#475569]">{{ u.notes || '—' }}</td>
+                    <tr v-for="u in usages?.data ?? []" :key="u.id" class="transition-colors hover:bg-gray-50/60">
+                        <td class="whitespace-nowrap px-4 py-3 text-[13px] text-gray-500">{{ formatDate(u.used_at) }}</td>
+                        <td class="whitespace-nowrap px-4 py-3 text-[13px] font-medium text-gray-800">{{ u.agent?.name ?? '—' }}</td>
+                        <td class="whitespace-nowrap px-4 py-3 text-[13px] text-gray-500">{{ u.model }}</td>
+                        <td class="whitespace-nowrap px-4 py-3 text-right text-[13px] tabular-nums text-orange-500">{{ u.input_tokens.toLocaleString() }}</td>
+                        <td class="whitespace-nowrap px-4 py-3 text-right text-[13px] tabular-nums text-emerald-500">{{ u.output_tokens.toLocaleString() }}</td>
+                        <td class="whitespace-nowrap px-4 py-3 text-right text-[13px] tabular-nums text-blue-500">{{ (u.input_tokens + u.output_tokens).toLocaleString() }}</td>
+                        <td class="whitespace-nowrap px-4 py-3 text-right text-[13px] tabular-nums text-amber-500">{{ formatCost(u.cost) }}</td>
+                        <td class="max-w-xs truncate px-4 py-3 text-[13px] text-gray-400">{{ u.notes || '—' }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -164,9 +136,7 @@ function formatCost(c) {
 
         <!-- Pagination -->
         <div v-if="usages && usages.last_page > 1" class="flex items-center justify-between">
-            <p class="text-[13px] text-[#475569]">
-                Showing {{ usages.from }}–{{ usages.to }} of {{ usages.total }}
-            </p>
+            <p class="text-[13px] text-gray-400">Showing {{ usages.from }}–{{ usages.to }} of {{ usages.total }}</p>
             <div class="flex gap-1">
                 <Link
                     v-for="link in usages.links"
@@ -174,10 +144,10 @@ function formatCost(c) {
                     :href="link.url ?? '#'"
                     v-html="link.label"
                     :class="[
-                        'rounded-full px-3 py-1 text-[13px] border transition-colors',
+                        'rounded-full border px-3 py-1 text-[13px] transition-colors',
                         link.active
-                            ? 'bg-[#F97316] border-[#F97316] text-white font-medium'
-                            : 'border-white/[0.07] text-[#94A3B8] hover:text-[#F1F5F9]',
+                            ? 'border-orange-500 bg-orange-500 font-medium text-white'
+                            : 'border-gray-200 text-gray-500 hover:border-gray-300 hover:text-gray-700',
                         !link.url ? 'cursor-not-allowed opacity-40' : '',
                     ]"
                     preserve-scroll

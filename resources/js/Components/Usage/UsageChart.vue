@@ -28,13 +28,13 @@ const chartData = computed(() => {
         datasets: [{
             label:                metrics.find(m => m.value === metric.value)?.label,
             data:                 data ?? [],
-            borderColor:          '#818CF8',
-            backgroundColor:      'rgba(129,140,248,0.12)',
+            borderColor:          '#f97316',
+            backgroundColor:      'rgba(249,115,22,0.07)',
             tension:              0.3,
             fill:                 true,
             pointRadius:          (props.chart.labels?.length ?? 0) > 60 ? 0 : 3,
             pointHoverRadius:     5,
-            pointBackgroundColor: '#818CF8',
+            pointBackgroundColor: '#f97316',
             borderWidth:          2,
         }],
     };
@@ -46,12 +46,12 @@ const options = computed(() => ({
     plugins: {
         legend: { display: false },
         tooltip: {
-            backgroundColor: '#1E293B',
-            borderColor:     'rgba(255,255,255,0.07)',
-            borderWidth:      1,
-            titleColor:       '#94A3B8',
-            bodyColor:        '#F1F5F9',
-            padding:          10,
+            backgroundColor: 'white',
+            borderColor:     '#e5e7eb',
+            borderWidth:     1,
+            titleColor:      '#6b7280',
+            bodyColor:       '#111827',
+            padding:         10,
             callbacks: {
                 label: (ctx) => {
                     const v = ctx.parsed.y;
@@ -63,45 +63,40 @@ const options = computed(() => ({
     },
     scales: {
         x: {
-            ticks: { color: '#475569', font: { size: 11 }, maxTicksLimit: 10 },
-            grid:  { color: 'rgba(255,255,255,0.06)' },
-            border: { color: 'rgba(255,255,255,0.07)' },
+            ticks:  { color: '#9ca3af', font: { size: 11 }, maxTicksLimit: 10 },
+            grid:   { color: 'rgba(0,0,0,0.04)' },
+            border: { color: '#f3f4f6' },
         },
         y: {
             beginAtZero: true,
             ticks: {
-                color: '#475569',
-                font: { size: 11 },
+                color: '#9ca3af',
+                font:  { size: 11 },
                 callback: (v) => v >= 1000 ? (v/1000).toFixed(0)+'K' : v,
             },
-            grid:   { color: 'rgba(255,255,255,0.06)' },
-            border: { color: 'rgba(255,255,255,0.07)' },
+            grid:   { color: 'rgba(0,0,0,0.04)' },
+            border: { color: '#f3f4f6' },
         },
     },
 }));
 </script>
 
 <template>
-    <div
-        class="rounded-[14px] border border-white/[0.07] p-5 backdrop-blur-[12px]"
-        style="background: rgba(17,24,39,0.60)"
-    >
-        <!-- Header row -->
+    <div class="rounded-[12px] border border-gray-100 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.08)]">
         <div class="mb-4 flex items-center justify-between">
-            <p class="text-[11px] font-medium uppercase tracking-[0.08em] text-[#94A3B8]">Usage Trend</p>
+            <p class="text-[11px] font-semibold uppercase tracking-[0.08em] text-gray-400">Usage Trend</p>
 
-            <!-- Metric toggle — pill container -->
-            <div
-                class="flex rounded-full p-[3px]"
-                style="background: rgba(255,255,255,0.05)"
-            >
+            <!-- Metric toggle -->
+            <div class="flex rounded-full p-[3px]" style="background: rgba(0,0,0,0.05)">
                 <button
                     v-for="m in metrics"
                     :key="m.value"
                     type="button"
                     :class="[
-                        'rounded-full px-[14px] py-[5px] text-[13px] transition-colors focus:outline-none',
-                        metric === m.value ? 'bg-[#F97316] font-semibold text-white' : 'text-[#94A3B8] hover:text-[#F1F5F9]',
+                        'rounded-full px-[14px] py-[5px] text-[13px] font-medium transition-all focus:outline-none',
+                        metric === m.value
+                            ? 'bg-orange-500 text-white shadow-sm'
+                            : 'text-gray-500 hover:text-gray-800',
                     ]"
                     @click="metric = m.value"
                 >
@@ -110,10 +105,8 @@ const options = computed(() => ({
             </div>
         </div>
 
-        <div
-            v-if="!chart.labels || chart.labels.length === 0"
-            class="flex h-44 items-center justify-center text-[13px] text-[#475569]"
-        >
+        <div v-if="!chart.labels || chart.labels.length === 0"
+             class="flex h-44 items-center justify-center text-[13px] text-gray-400">
             No data for this period
         </div>
         <div v-else class="h-52">

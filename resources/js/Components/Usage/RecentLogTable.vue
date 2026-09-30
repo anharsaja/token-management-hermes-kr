@@ -14,43 +14,42 @@ function relativeTime(iso) {
 </script>
 
 <template>
-    <div
-        class="rounded-[14px] border border-white/[0.07] p-5 backdrop-blur-[12px]"
-        style="background: rgba(17,24,39,0.60)"
-    >
-        <p class="mb-4 text-[11px] font-medium uppercase tracking-[0.08em] text-[#94A3B8]">Recent Log</p>
+    <div class="flex h-full flex-col rounded-[12px] border border-gray-100 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.08)]">
+        <div class="border-b border-gray-100 px-4 py-3">
+            <p class="text-[11px] font-semibold uppercase tracking-[0.08em] text-gray-400">Recent Requests</p>
+        </div>
 
-        <div class="max-h-80 overflow-y-auto">
-            <p v-if="recentLog.length === 0" class="py-8 text-center text-[13px] text-[#475569]">
-                No usage recorded yet
+        <div class="flex-1 overflow-y-auto">
+            <p v-if="recentLog.length === 0" class="py-8 text-center text-[13px] text-gray-400">
+                No requests yet
             </p>
 
             <table v-else class="w-full">
                 <thead>
-                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.07)">
-                        <th class="pb-2 text-left text-[11px] font-medium uppercase tracking-[0.06em] text-[#475569]">Model</th>
-                        <th class="pb-2 text-right text-[11px] font-medium uppercase tracking-[0.06em] text-[#475569]">In / Out</th>
-                        <th class="pb-2 text-right text-[11px] font-medium uppercase tracking-[0.06em] text-[#475569]">When</th>
+                    <tr class="border-b border-gray-50">
+                        <th class="px-4 py-2 text-left text-[11px] font-medium uppercase tracking-[0.06em] text-gray-400">Model</th>
+                        <th class="px-4 py-2 text-right text-[11px] font-medium uppercase tracking-[0.06em] text-gray-400">In / Out</th>
+                        <th class="px-4 py-2 text-right text-[11px] font-medium uppercase tracking-[0.06em] text-gray-400">When</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="divide-y divide-gray-50">
                     <tr
                         v-for="(entry, i) in recentLog"
                         :key="i"
-                        class="transition-colors"
-                        style="border-bottom: 1px solid rgba(255,255,255,0.07)"
-                        onmouseenter="this.style.background='rgba(255,255,255,0.03)'"
-                        onmouseleave="this.style.background=''"
+                        class="transition-colors hover:bg-gray-50/60"
                     >
-                        <td class="py-2.5 pr-2 text-[13px] text-[#F1F5F9] max-w-[100px] truncate">{{ entry.model }}</td>
-                        <td class="py-2.5 text-right text-[13px] tabular-nums">
-                            <span style="color:#F97316">{{ entry.input_tokens.toLocaleString() }}</span>
-                            <span style="color:#334155"> / </span>
-                            <span style="color:#2DD4BF">{{ entry.output_tokens.toLocaleString() }}</span>
+                        <td class="px-4 py-2.5 text-[13px]">
+                            <div class="flex items-center gap-2">
+                                <span class="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-emerald-400"></span>
+                                <span class="max-w-[110px] truncate font-medium text-gray-700">{{ entry.model }}</span>
+                            </div>
                         </td>
-                        <td class="py-2.5 pl-2 text-right text-[12px]" style="color:#475569">
-                            {{ relativeTime(entry.created_at) }}
+                        <td class="px-4 py-2.5 text-right text-[13px] tabular-nums">
+                            <span class="text-orange-500">{{ entry.input_tokens.toLocaleString() }}↑</span>
+                            <span class="mx-1 text-gray-300">/</span>
+                            <span class="text-emerald-500">{{ entry.output_tokens.toLocaleString() }}↓</span>
                         </td>
+                        <td class="px-4 py-2.5 text-right text-[12px] text-gray-400">{{ relativeTime(entry.created_at) }}</td>
                     </tr>
                 </tbody>
             </table>

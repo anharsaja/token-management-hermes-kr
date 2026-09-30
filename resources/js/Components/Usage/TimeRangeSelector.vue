@@ -13,10 +13,9 @@ function select(r) {
 </script>
 
 <template>
-    <!-- Pill container: rgba(255,255,255,0.05) bg, radius-full, 3px padding -->
     <div
         class="flex rounded-full p-[3px]"
-        style="background: rgba(255,255,255,0.05)"
+        style="background: rgba(0,0,0,0.05)"
         role="group"
         aria-label="Time range"
     >
@@ -25,10 +24,10 @@ function select(r) {
             :key="r.value"
             type="button"
             :class="[
-                'rounded-full px-[14px] py-[5px] text-[13px] font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[#F97316]/40',
+                'rounded-full px-[14px] py-[5px] text-[13px] font-medium transition-all focus:outline-none focus:ring-2 focus:ring-orange-400/40',
                 activeRange === r.value
-                    ? 'bg-[#F97316] text-white font-semibold'
-                    : 'text-[#94A3B8] hover:text-[#F1F5F9]',
+                    ? 'bg-orange-500 text-white shadow-sm'
+                    : 'text-gray-500 hover:text-gray-800',
             ]"
             @click="select(r.value)"
         >
