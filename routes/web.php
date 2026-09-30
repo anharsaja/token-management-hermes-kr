@@ -1,20 +1,18 @@
 <?php
 
 use App\Http\Controllers\AgentController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProviderBalanceController;
 use App\Http\Controllers\TokenUsageController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::get('/', function () {
     return redirect()->route('dashboard');
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', DashboardController::class)->name('dashboard');
 
     // Agents
     Route::get('/agents', [AgentController::class, 'index'])->name('agents.index');
