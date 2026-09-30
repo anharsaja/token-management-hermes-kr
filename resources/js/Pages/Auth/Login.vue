@@ -16,9 +16,10 @@ defineProps({
     },
 });
 
+// Pre-filled for local dev convenience — change before going to production
 const form = useForm({
-    email: '',
-    password: '',
+    email: 'owner@example.com',
+    password: 'password',
     remember: false,
 });
 
@@ -72,9 +73,7 @@ const submit = () => {
             <div class="mt-4 block">
                 <label class="flex items-center">
                     <Checkbox name="remember" v-model:checked="form.remember" />
-                    <span class="ms-2 text-sm text-gray-600"
-                        >Remember me</span
-                    >
+                    <span class="ms-2 text-sm text-gray-600">Remember me</span>
                 </label>
             </div>
 
