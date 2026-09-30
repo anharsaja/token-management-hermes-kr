@@ -38,12 +38,20 @@ function formatDate(d) {
             <!-- Header -->
             <div class="mb-6 flex items-center justify-between">
                 <h1 class="text-2xl font-semibold text-gray-900">Provider Balances</h1>
-                <Link
-                    :href="route('provider-balances.create')"
-                    class="inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                >
-                    Add Balance
-                </Link>
+                <div class="flex items-center gap-2">
+                    <a
+                        :href="route('provider-balances.export')"
+                        class="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    >
+                        Export CSV
+                    </a>
+                    <Link
+                        :href="route('provider-balances.create')"
+                        class="inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    >
+                        Add Balance
+                    </Link>
+                </div>
             </div>
 
             <!-- Flash -->

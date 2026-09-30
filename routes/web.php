@@ -24,6 +24,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Token Usages
     Route::get('/token-usages', [TokenUsageController::class, 'index'])->name('token-usages.index');
+    Route::get('/token-usages/export', [TokenUsageController::class, 'export'])->name('token-usages.export');
     Route::get('/token-usages/create', [TokenUsageController::class, 'create'])->name('token-usages.create');
     Route::post('/token-usages', [TokenUsageController::class, 'store'])->name('token-usages.store');
     Route::get('/token-usages/{tokenUsage}/edit', [TokenUsageController::class, 'edit'])->name('token-usages.edit');
@@ -32,6 +33,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Provider Balances
     Route::get('/provider-balances', [ProviderBalanceController::class, 'index'])->name('provider-balances.index');
+    Route::get('/provider-balances/export', [ProviderBalanceController::class, 'export'])->name('provider-balances.export');
     Route::get('/provider-balances/create', [ProviderBalanceController::class, 'create'])->name('provider-balances.create');
     Route::post('/provider-balances', [ProviderBalanceController::class, 'store'])->name('provider-balances.store');
     Route::get('/provider-balances/{providerBalance}/edit', [ProviderBalanceController::class, 'edit'])->name('provider-balances.edit');

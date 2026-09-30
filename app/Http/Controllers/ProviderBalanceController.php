@@ -68,6 +68,31 @@ class ProviderBalanceController extends Controller
             ->with('flash', 'Balance updated successfully.');
     }
 
+    public function export(): \Symfony\Component\HttpFoundation\StreamedResponse
+    {
+        $rows  = ProviderBalance::orderBy('provider')->orderByDesc('last_updated_at')->get();
+        $date  = now()->format('Y-m-d');
+        $headers = [
+            'Content-Type'        => 'text/csv',
+            'Content-Disposition' => "attachment; filename=\"provider-balances-{$date}.csv\"",
+        ];
+
+        return response()->stream(function () use ($rows) {
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, ['Provider', 'Balance', 'Currency', 'Last Updated', 'Notes']);
+            foreach ($rows as $b) {
+                fputcsv($handle, [
+                    $b->provider,
+                    number_format((float) $b->balance, 2, '.', ''),
+                    $b->currency,
+                    $b->last_updated_at?->format('Y-m-d'),
+                    $b->notes ?? '',
+                ]);
+            }
+            fclose($handle);
+        }, 200, $headers);
+    }
+
     public function destroy(ProviderBalance $providerBalance): RedirectResponse
     {
         $providerBalance->delete();

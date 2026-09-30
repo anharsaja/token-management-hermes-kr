@@ -4,14 +4,21 @@ import SummaryCard from '@/Components/Dashboard/SummaryCard.vue';
 import TopAgentsTable from '@/Components/Dashboard/TopAgentsTable.vue';
 import RecentUsageTable from '@/Components/Dashboard/RecentUsageTable.vue';
 import ProviderBalanceTable from '@/Components/Dashboard/ProviderBalanceTable.vue';
+import TokenTrendChart from '@/Components/Dashboard/TokenTrendChart.vue';
+import TokenPerAgentChart from '@/Components/Dashboard/TokenPerAgentChart.vue';
+import CostPerAgentChart from '@/Components/Dashboard/CostPerAgentChart.vue';
 import { router } from '@inertiajs/vue3';
 
 const props = defineProps({
-    period:            { type: String, default: 'month' },
-    cards:             { type: Object, default: () => ({}) },
-    top_agents:        { type: Array,  default: () => [] },
-    recent_usages:     { type: Array,  default: () => [] },
-    provider_balances: { type: Array,  default: () => [] },
+    period:            { type: String,  default: 'month' },
+    cards:             { type: Object,  default: () => ({}) },
+    top_agents:        { type: Array,   default: () => [] },
+    recent_usages:     { type: Array,   default: () => [] },
+    provider_balances: { type: Array,   default: () => [] },
+    token_trend:       { type: Array,   default: () => [] },
+    token_per_agent:   { type: Array,   default: () => [] },
+    cost_per_agent:    { type: Array,   default: () => [] },
+    group_by_month:    { type: Boolean, default: false },
 });
 
 const periodOptions = [
@@ -69,7 +76,7 @@ function periodLabel(v) {
             </div>
 
             <!-- Summary Cards -->
-            <div class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <SummaryCard
                     title="Active Agents"
                     :value="cards.total_agents ?? 0"
@@ -92,13 +99,32 @@ function periodLabel(v) {
                 />
             </div>
 
-            <!-- Top Agents + Provider Balances -->
+            <!-- Charts Row: Line (8/12) + Doughnut (4/12) -->
+            <div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
+                <div class="lg:col-span-2">
+                    <TokenTrendChart
+                        :token-trend="token_trend"
+                        :period="period"
+                        :group-by-month="group_by_month"
+                    />
+                </div>
+                <div class="lg:col-span-1">
+                    <CostPerAgentChart :cost-per-agent="cost_per_agent" />
+                </div>
+            </div>
+
+            <!-- Bar Chart full width -->
+            <div class="mb-6">
+                <TokenPerAgentChart :token-per-agent="token_per_agent" />
+            </div>
+
+            <!-- Tables Row: Top Agents + Provider Balances -->
             <div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
                 <TopAgentsTable :agents="top_agents" />
                 <ProviderBalanceTable :balances="provider_balances" />
             </div>
 
-            <!-- Recent Usage -->
+            <!-- Recent Usage full width -->
             <RecentUsageTable :usages="recent_usages" />
         </div>
     </AppLayout>

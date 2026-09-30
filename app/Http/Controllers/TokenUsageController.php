@@ -84,6 +84,46 @@ class TokenUsageController extends Controller
             ->with('flash', 'Token usage updated successfully.');
     }
 
+    public function export(Request $request): \Symfony\Component\HttpFoundation\StreamedResponse
+    {
+        $query = TokenUsage::with('agent')->latest('used_at')->latest('id');
+
+        if ($request->filled('agent_id')) {
+            $query->where('agent_id', $request->agent_id);
+        }
+        if ($request->filled('date_from')) {
+            $query->whereDate('used_at', '>=', $request->date_from);
+        }
+        if ($request->filled('date_to')) {
+            $query->whereDate('used_at', '<=', $request->date_to);
+        }
+
+        $rows    = $query->get();
+        $date    = now()->format('Y-m-d');
+        $headers = [
+            'Content-Type'        => 'text/csv',
+            'Content-Disposition' => "attachment; filename=\"token-usages-{$date}.csv\"",
+        ];
+
+        return response()->stream(function () use ($rows) {
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, ['Date', 'Agent', 'Model', 'Input Tokens', 'Output Tokens', 'Total Tokens', 'Cost (USD)', 'Notes']);
+            foreach ($rows as $u) {
+                fputcsv($handle, [
+                    $u->used_at?->format('Y-m-d'),
+                    $u->agent?->name ?? '',
+                    $u->model,
+                    $u->input_tokens,
+                    $u->output_tokens,
+                    $u->input_tokens + $u->output_tokens,
+                    $u->cost !== null ? number_format((float) $u->cost, 6, '.', '') : '',
+                    $u->notes ?? '',
+                ]);
+            }
+            fclose($handle);
+        }, 200, $headers);
+    }
+
     public function destroy(TokenUsage $tokenUsage): RedirectResponse
     {
         $tokenUsage->delete();
